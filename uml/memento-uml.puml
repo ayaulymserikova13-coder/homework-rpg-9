@@ -1,0 +1,82 @@
+@startuml
+title Memento Pattern - Chronomancer's Vault
+
+class Hero {
+  -name: String
+  -hp: int
+  -maxHp: int
+  -mana: int
+  -gold: int
+  -attackPower: int
+  -defense: int
+  -inventory: Inventory
+  +takeDamage(amount: int): void
+  +heal(amount: int): void
+  +restoreMana(amount: int): void
+  +spendMana(amount: int): boolean
+  +addGold(amount: int): void
+  +spendGold(amount: int): boolean
+  +setInventory(inventory: Inventory): void
+  +createMemento(): HeroMemento
+  +restoreFromMemento(memento: HeroMemento): void
+}
+
+class HeroMemento {
+  -name: String
+  -hp: int
+  -mana: int
+  -gold: int
+  -maxHp: int
+  -attackPower: int
+  -defense: int
+  -inventorySnapshot: List<Artifact>
+  ~getHp(): int
+  ~getMana(): int
+  ~getGold(): int
+  ~getInventorySnapshot(): List<Artifact>
+}
+
+class Caretaker {
+  -history: Deque<HeroMemento>
+  +save(memento: HeroMemento): void
+  +undo(): HeroMemento
+  +peek(): HeroMemento
+  +size(): int
+}
+
+class ChronomancerEngine {
+  +runVault(party: List<Hero>): VaultRunResult
+  -buildVaultInventory(): Inventory
+}
+
+class VaultRunResult {
+  -artifactsAppraised: int
+  -mementosCreated: int
+  -restoredCount: int
+  +getArtifactsAppraised(): int
+  +getMementosCreated(): int
+  +getRestoredCount(): int
+}
+
+class Inventory
+class Artifact
+
+Hero --> HeroMemento : creates/restores
+Caretaker o-- HeroMemento : stores opaque snapshots
+ChronomancerEngine --> Hero : changes and restores state
+ChronomancerEngine --> Caretaker : saves/undoes snapshots
+ChronomancerEngine --> VaultRunResult : returns
+Hero --> Inventory : owns
+HeroMemento --> Artifact : stores inventory snapshot
+
+note right of HeroMemento
+Getters are package-private.
+Caretaker cannot read internal state.
+end note
+
+note bottom of Caretaker
+Caretaker treats HeroMemento
+as an opaque value.
+end note
+
+@enduml

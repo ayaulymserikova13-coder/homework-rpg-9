@@ -1,0 +1,85 @@
+@startuml
+title Visitor Pattern - Chronomancer's Vault
+
+interface ArtifactVisitor {
+  +visit(weapon: Weapon): void
+  +visit(potion: Potion): void
+  +visit(scroll: Scroll): void
+  +visit(ring: Ring): void
+  +visit(armor: Armor): void
+}
+
+abstract class Artifact {
+  -name: String
+  -value: int
+  -weight: int
+  +getName(): String
+  +getValue(): int
+  +getWeight(): int
+  +accept(visitor: ArtifactVisitor): void
+}
+
+class Weapon {
+  -attackBonus: int
+  +getAttackBonus(): int
+  +accept(visitor: ArtifactVisitor): void
+}
+
+class Potion {
+  -healing: int
+  +getHealing(): int
+  +accept(visitor: ArtifactVisitor): void
+}
+
+class Scroll {
+  -spellName: String
+  +getSpellName(): String
+  +accept(visitor: ArtifactVisitor): void
+}
+
+class Ring {
+  -magicBonus: int
+  +getMagicBonus(): int
+  +accept(visitor: ArtifactVisitor): void
+}
+
+class Armor {
+  -defenseBonus: int
+  +getDefenseBonus(): int
+  +accept(visitor: ArtifactVisitor): void
+}
+
+class Inventory {
+  -artifacts: List<Artifact>
+  +addArtifact(artifact: Artifact): void
+  +getArtifacts(): List<Artifact>
+  +size(): int
+  +accept(visitor: ArtifactVisitor): void
+  +copy(): Inventory
+}
+
+class GoldAppraiser
+class EnchantmentScanner
+class CurseDetector
+class WeightCalculator
+
+Artifact <|-- Weapon
+Artifact <|-- Potion
+Artifact <|-- Scroll
+Artifact <|-- Ring
+Artifact <|-- Armor
+
+ArtifactVisitor <|.. GoldAppraiser
+ArtifactVisitor <|.. EnchantmentScanner
+ArtifactVisitor <|.. CurseDetector
+ArtifactVisitor <|.. WeightCalculator
+
+Inventory "1" o-- "*" Artifact
+Artifact ..> ArtifactVisitor : accepts
+Weapon ..> ArtifactVisitor : visitor.visit(this)
+Potion ..> ArtifactVisitor : visitor.visit(this)
+Scroll ..> ArtifactVisitor : visitor.visit(this)
+Ring ..> ArtifactVisitor : visitor.visit(this)
+Armor ..> ArtifactVisitor : visitor.visit(this)
+
+@enduml
